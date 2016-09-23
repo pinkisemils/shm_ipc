@@ -12,10 +12,25 @@ receive_user_input(shm_t* shm)
 {
     printf("Enter your message in the writer\n");
     // hopefully this process will block on this mutex
-    pthread_mutex_lock(&shm->mutex);
-    printf("Received: %d\n", shm->queue[0]);
-    printf("Counter: %d\n", shm->counter);
-    pthread_mutex_unlock(&shm->mutex);
+    while(shm->marker)
+    {
+        pthread_mutex_lock(&shm->mutex);
+        while(shm->counter < 0 && shm->marker) 
+        {
+            pthread_cond_wait(&shm->condition, &shm->mutex);
+        }
+        if (!shm->marker) {
+            pthread_mutex_unlock(&shm->mutex);
+            break;
+        }
+        while(shm->counter >= 0)
+        {
+            printf("Received: %d\n", shm->queue[shm->counter]);
+            shm->counter--;
+        }
+        pthread_mutex_unlock(&shm->mutex);
+    }
+    return;
 }
 
 int

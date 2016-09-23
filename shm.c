@@ -37,6 +37,7 @@ init_main_shm(char* shm_name)
 
     shm_t* shm = (shm_t*) addr;
     shm->marker = true;
+    shm->counter = -1;
 
     int e;
     e = pthread_mutexattr_init(&g_mutex_attr);
