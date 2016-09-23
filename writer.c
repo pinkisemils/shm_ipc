@@ -29,9 +29,14 @@ send_user_input(shm_t* shm)
 
     printf("Start up the reader\n");
     // getting a pointer to the heap of bytes allocated perviosly
-    char* buffer = (shm->queue);
-    scanf("%s", buffer);
-    pthread_mutex_unlock(&shm->mutex);
+    int recv;
+    while(scanf("%d", &recv) != -1)
+    {
+        shm->queue[shm->counter] = recv;
+        shm->counter += 1;
+        pthread_mutex_unlock(&shm->mutex);
+
+    }
 }
 
 

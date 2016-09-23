@@ -42,21 +42,42 @@ init_main_shm(char* shm_name)
     e = pthread_mutexattr_init(&g_mutex_attr);
     if (e != 0)
     {
-        perror("Could set mutex attributes to PTHREAD_PROCESS_SHARED");
+        perror("Couldn't initialize mutexattr");
         return (void*) -1;
     }
     // setting the mutex attribute to allow for inter-process locking
     e = pthread_mutexattr_setpshared(&g_mutex_attr, PTHREAD_PROCESS_SHARED);
     if (e != 0)
     {
-        perror("Could set mutex attributes to PTHREAD_PROCESS_SHARED");
+        perror("Couldn't mutex attributes to PTHREAD_PROCESS_SHARED");
+        return (void*) -1;
+    }
+
+    e = pthread_condattr_init(&g_cond_attr);
+    if (e != 0)
+    {
+        perror("Couldn't initialize pthread conditional");
+        return (void*) -1;
+    }
+
+    e = pthread_condattr_setpshared(&g_cond_attr, PTHREAD_PROCESS_SHARED);
+    if (e != 0)
+    {
+        perror("Couldn't set condition attributes to PTHREAD_PROCESS_SHARED");
+        return (void*) -1;
+    }
+
+    e = pthread_cond_init(&shm->condition, &g_cond_attr);
+    if (e != 0)
+    {
+        perror("Couldn't initialize condition");
         return (void*) -1;
     }
 
     e = pthread_mutex_init(&shm->mutex, &g_mutex_attr);
     if (e != 0)
     {
-        perror("Could not initialize mutex");
+        perror("Couldn't initialize mutex");
         return (void*) -1;
     }
     pthread_mutex_lock(&shm->mutex);

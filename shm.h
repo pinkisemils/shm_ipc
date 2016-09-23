@@ -4,8 +4,8 @@
 #define G_QUEUE_SIZE 2048
 typedef struct shm_t {
     bool marker; //should always be true if the memory region is ready
-    pthread_mutex_t mutex;
     pthread_cond_t condition;
+    pthread_mutex_t mutex;
     bool written_to;
     int counter;
     int queue[G_QUEUE_SIZE];
