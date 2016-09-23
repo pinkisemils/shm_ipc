@@ -17,11 +17,7 @@ init_shm(char* shm_name)
         return (void*) -1;
     }
 
-    int rc = ftruncate(fd, size);
-    if (rc == -1) {
-        perror("Failed to set size properly");
-    }
-
+    //memmory mapping the shared memory file descriptor
     void* addr = mmap(0, 1024*1024, PROT_READ | PROT_WRITE, MAP_SHARED, fd, (off_t) 0);
     if (addr == MAP_FAILED || addr == (void*)-1) 
     {
@@ -31,16 +27,17 @@ init_shm(char* shm_name)
     return addr;
 }
 
-int
+void
 receive_user_input(void* mmap_ptr)
 {
     pthread_mutex_t* lock = (pthread_mutex_t*) mmap_ptr;
     char* buffer = (char*) mmap_ptr + sizeof(pthread_mutex_t);
 
+    printf("Enter your message in the writer\n");
+    // hopefully this process will block on this mutex
     pthread_mutex_lock(lock);
     printf("Received: %s\n", buffer);
     pthread_mutex_unlock(lock);
-    return 0;
 }
 
 int
@@ -48,17 +45,13 @@ main()
 {
     char* shm_name = "/test";
     void* addr = init_shm(shm_name);
-    int retval;
 
     if (addr == (void*) -1) {
         printf("Failed to initialize shared memory\n");
         return -1;
     }
-    retval = receive_user_input(addr);
-    if (retval != 0) 
-    {
-        return 1;
-    }
+    receive_user_input(addr);
+    return 0;
 }
 
 
