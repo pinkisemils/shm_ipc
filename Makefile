@@ -4,10 +4,17 @@ CFLAGS=-lrt -lpthread -g
 all:	reader writer
 
 writer:	writer.c
-	$(CC) $(CFLAGS) writer.c -o writer
+	$(CC) $(CFLAGS)  shm.o writer.c -o writer
 
 reader:	reader.c
-	$(CC) $(CFLAGS) reader.c -o reader
+	$(CC) $(CFLAGS)  shm.o reader.c -o reader
 
+
+writer.c: shm.o
+
+reader.c: shm.o
+
+shm.o: shm.c
+	$(CC) $(CFLAGS) -c shm.c
 clean:
-	rm writer reader
+	rm writer reader *.o
