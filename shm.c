@@ -113,3 +113,15 @@ get_shm(char* shm_name)
     return shm;
 
 }
+    
+void 
+close_shm(char* shm_name) 
+{
+    int retval = shm_unlink(shm_name);
+    if (retval != 0)
+    {
+        perror("Failed to close shm");
+    }   
+}
+
+

@@ -14,10 +14,10 @@ typedef struct shm_t {
 
 shm_t*
 get_shm(char* shm_name);
-//pthread_condattr_t g_cond_attr;
 
-//by default, the mutex is locked
 shm_t*
 init_main_shm(char* shm_name);
 
+void 
+close_shm(char* shm_name);
 

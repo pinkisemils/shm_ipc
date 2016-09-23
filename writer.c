@@ -8,19 +8,6 @@
 #include "shm.h"
 
 
-void 
-close_shm(char* shm_name) 
-{
-    // unlinks the shared memory object
-    // it will still exist if it's used by anything
-    // as it goes for any file handle
-    int retval = shm_unlink(shm_name);
-    if (retval != 0)
-    {
-        printf("Failed to close shm\n");
-    }   
-}
-
 
 void
 send_user_input(shm_t* shm)
